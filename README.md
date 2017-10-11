@@ -1,12 +1,15 @@
 # Genomic Variant Prioritization
 Worklow post-genotype calling to prioritize disease-causing variants.
+https://github.com/davemcg/NGS_genotype_calling
 
 # Input
-VCF from GVCF_to_hardFilteredVCF.sh
+Multi-sample VCF from GVCF_to_hardFilteredVCF.sh or VCF_to_VQSRfilteredVCF.sh
 
-# Process
-Annotate with vcf_to_annotated_vcf.sh
+# Create Gemini DB
+sbatch --cpus-per-task 16 GATK_vcf_to_geminiDB.sh your.vcf your.ped name_of_your_to_be_created_gemini.db
 
-Then create gemini db with vcf2db on cyclops (trying to get this installed on biowulf2)
+# Create custom report for subject
+sbatch query_gemini_wrapper.sh name_of_your_to_be_created_gemini.db family_name_from_ped report_name.xls
 
-Note: If you are only processing a trio, then you need to modify query_gemini.py to NOT filter on AF < 0.1
+# Note: If you are only processing a small set of samples (like a trio), then you need to modify query_gemini.py to NOT filter on AF < 0.1
+sbatch query_gemini_wrapper.sh name_of_your_to_be_created_gemini.db family_name_from_ped report_name.xls 0.6
